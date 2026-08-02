@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora — AI Workflow Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #f8f9fc;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-hover: #f5f3ff;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --accent: #7c3aed;
+  --accent-light: #a78bfa;
+  --accent-bg: rgba(124, 58, 237, 0.1);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-body: 'Inter', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ===== AUTH PAGES ===== */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+.auth-container::before {
+  content: ''; position: absolute; width: 600px; height: 600px;
+  background: rgba(255,255,255,0.1); border-radius: 50%;
+  top: -300px; right: -300px; animation: float 20s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -30px) scale(1.1); } }
+
+.auth-box {
+  background: white; border-radius: 20px; padding: 48px;
+  width: 100%; max-width: 440px; box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+  position: relative; z-index: 1; animation: slideUp 0.5s ease;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+.auth-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; justify-content: center; }
+.auth-logo-icon {
+  width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: white;
+}
+.auth-logo-text { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+.auth-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+.auth-subtitle { text-align: center; color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px; }
+.auth-form { display: flex; flex-direction: column; gap: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-label { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+.form-input {
+  padding: 14px 16px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-family: var(--font-body); transition: all 0.2s; outline: none; width: 100%;
+}
+.form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.auth-btn {
+  padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: white; border: none; border-radius: var(--radius-sm); font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: all 0.3s; font-family: var(--font-body);
+}
+.auth-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3); }
+.auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.auth-divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; color: var(--text-muted); font-size: 0.875rem; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.social-auth { display: flex; flex-direction: column; gap: 12px; }
+.social-btn {
+  padding: 12px; border: 2px solid var(--border); border-radius: var(--radius-sm); background: white;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: 0.95rem; font-weight: 500; transition: all 0.2s; font-family: var(--font-body);
+}
+.social-btn:hover { border-color: var(--accent); background: var(--bg-hover); }
+.social-btn i { font-size: 1.2rem; }
+.social-btn.google i { color: #ea4335; } .social-btn.github i { color: #333; } .social-btn.microsoft i { color: #0078d4; }
+.auth-footer { text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary); }
+.auth-footer a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
+.auth-error { background: #fee2e2; color: var(--danger); padding: 12px 16px; border-radius: var(--radius-sm); font-size: 0.875rem; display: none; align-items: center; gap: 8px; margin-bottom: 16px;}
+.auth-error.show { display: flex; }
+
+/* ===== MAIN APP LAYOUT ===== */
+.app { display: none; min-height: 100vh; }
+.app.active { display: flex; }
+
+/* Sidebar */
+.sidebar {
+  width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border);
+  padding: 24px 16px; display: flex; flex-direction: column;
+  position: fixed; height: 100vh; overflow-y: auto; z-index: 100;
+  transition: transform 0.3s ease;
+}
+.sidebar-logo { display: flex; align-items: center; gap: 12px; padding: 0 12px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.sidebar-logo-icon {
+  width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: white;
+}
+.sidebar-logo-text { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; }
+
+/* Mobile Close Button */
+.mobile-close-btn {
+  display: none; position: absolute; top: 20px; right: 20px;
+  background: none; border: none; font-size: 1.2rem; color: var(--text-secondary); cursor: pointer;
+}
+
+.nav-section { margin-bottom: 24px; }
+.nav-section-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 12px; margin-bottom: 8px; }
+.nav-menu { list-style: none; }
+.nav-item { margin-bottom: 4px; }
+.nav-link {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-sm);
+  text-decoration: none; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;
+  transition: all 0.2s; cursor: pointer;
+}
+.nav-link:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-link.active { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+.nav-link i { width: 20px; text-align: center; font-size: 1rem; }
+
+.sidebar-footer { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border); }
+.user-profile-card { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; }
+.user-profile-card:hover { background: var(--bg-hover); }
+.user-avatar {
+  width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.9rem; flex-shrink: 0;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-email { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.logout-btn { padding: 8px; background: none; border: none; color: var(--text-muted); cursor: pointer; transition: all 0.2s; border-radius: 6px; }
+.logout-btn:hover { background: #fee2e2; color: var(--danger); }
+
+/* Mobile Overlay */
+.mobile-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+  z-index: 99; opacity: 0; visibility: hidden; transition: all 0.3s;
+}
+.mobile-overlay.active { opacity: 1; visibility: visible; }
+
+/* Main Content */
+.main-content { flex: 1; margin-left: 260px; padding: 32px; min-height: 100vh; transition: margin 0.3s; }
+
+/* Mobile Top Bar */
+.mobile-topbar {
+  display: none; position: sticky; top: 0; background: var(--bg-card);
+  padding: 16px 20px; border-bottom: 1px solid var(--border); z-index: 90;
+  justify-content: space-between; align-items: center;
+  margin: -32px -32px 24px -32px; border-radius: 0;
+}
+.hamburger-btn {
+  background: none; border: none; font-size: 1.2rem; color: var(--text-primary); cursor: pointer; padding: 8px;
+}
+
+/* Page Header */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+.page-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.95rem; margin-top: 4px; }
+.header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { padding: 10px 20px; border-radius: var(--radius-sm); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-family: var(--font-body); display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary { background: white; color: var(--text-primary); border: 2px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Stats Grid */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: all 0.3s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+.stat-icon.purple { background: var(--accent-bg); color: var(--accent); }
+.stat-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.stat-icon.orange { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.stat-change-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+.stat-change-badge.positive { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.stat-value { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; margin-bottom: 4px; }
+.stat-label { font-size: 0.875rem; color: var(--text-secondary); font-weight: 500; }
+
+/* Cards */
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.card-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+
+/* Chart */
+.chart-container { height: 300px; display: flex; align-items: flex-end; justify-content: space-around; padding: 20px 0; position: relative; overflow-x: auto; }
+.chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; min-width: 30px; max-width: 60px; }
+.chart-bar { width: 100%; background: linear-gradient(to top, var(--accent-light), var(--accent)); border-radius: 8px 8px 0 0; transition: all 0.3s; cursor: pointer; }
+.chart-bar:hover { opacity: 0.8; }
+.chart-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+
+/* Workflow List */
+.workflow-list { display: flex; flex-direction: column; gap: 12px; }
+.workflow-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all 0.2s; flex-wrap: wrap; }
+.workflow-item:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+.workflow-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--accent-bg); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--accent); flex-shrink: 0; }
+.workflow-info { flex: 1; min-width: 150px; }
+.workflow-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+.workflow-meta { font-size: 0.8rem; color: var(--text-muted); }
+.workflow-status { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.workflow-status.active { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.workflow-status.paused { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.workflow-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.workflow-actions { display: flex; gap: 8px; }
+.icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--text-secondary); }
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Integrations Grid */
+.integrations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.integration-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; }
+.integration-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.integration-card.connected { border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
+.integration-logo { width: 64px; height: 64px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.integration-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+.integration-status { font-size: 0.75rem; color: var(--text-muted); }
+.integration-card.connected .integration-status { color: var(--success); font-weight: 600; }
+
+/* AI Chat */
+.ai-chat-container { display: flex; flex-direction: column; height: 600px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.ai-chat-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.ai-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-light)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
+.ai-chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+.chat-message { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
+.chat-message.user { align-self: flex-end; background: var(--accent); color: white; border-bottom-right-radius: 4px; }
+.chat-message.ai { align-self: flex-start; background: var(--bg); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.ai-chat-input { padding: 20px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.ai-chat-input input { flex: 1; padding: 12px 16px; border: 2px solid var(--border); border-radius: 24px; font-size: 0.9rem; outline: none; font-family: var(--font-body); }
+.ai-chat-input input:focus { border-color: var(--accent); }
+.ai-chat-input button { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: white; border: none; cursor: pointer; transition: all 0.2s; flex-shrink: 0;}
+.ai-chat-input button:hover { background: #6d28d9; }
+
+/* Settings & Profile */
+.settings-section, .profile-header { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; }
+.settings-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.settings-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px;}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-weight: 600; font-size: 0.95rem; }
+.settings-desc { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+.toggle-switch { width: 48px; height: 24px; background: var(--border); border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s; flex-shrink: 0;}
+.toggle-switch.active { background: var(--accent); }
+.toggle-switch::after { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: all 0.3s; box-shadow: var(--shadow-sm); }
+.toggle-switch.active::after { left: 26px; }
+
+.profile-header { text-align: center; }
+.profile-avatar-large { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-light)); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; color: white; margin: 0 auto 20px; font-family: var(--font-display); }
+.profile-name { font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+.profile-email { color: var(--text-secondary); font-size: 1rem; margin-bottom: 24px; }
+.profile-stats { display: flex; justify-content: center; gap: 48px; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap;}
+.profile-stat-value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+.profile-stat-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+
+/* Modal & Toast */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal { background: white; border-radius: var(--radius); padding: 32px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.modal-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+.modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.modal-close:hover { background: var(--border); }
+
+.toast-container { position: fixed; top: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none;}
+.toast { background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; min-width: 300px; animation: slideInRight 0.3s ease; pointer-events: auto;}
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.toast.success { border-left: 4px solid var(--success); } .toast.error { border-left: 4px solid var(--danger); } .toast.info { border-left: 4px solid var(--accent); }
+
+.loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== RESPONSIVE DESIGN (TABLET & MOBILE) ===== */
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); box-shadow: 5px 0 25px rgba(0,0,0,0.1); width: 280px; }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .mobile-close-btn { display: block; }
+  .main-content { margin-left: 0; padding: 20px; }
+  .mobile-topbar { display: flex; margin: -20px -20px 24px -20px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .integrations-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .auth-box { padding: 32px 24px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .integrations-grid { grid-template-columns: 1fr; }
+  .page-header { flex-direction: column; align-items: flex-start; }
+  .header-actions { width: 100%; }
+  .header-actions .btn { flex: 1; justify-content: center; }
+  .card-header { flex-direction: column; align-items: flex-start; }
+  .card-header .form-input { width: 100% !important; }
+  .profile-stats { gap: 24px; }
+  .workflow-item { flex-direction: column; align-items: flex-start; }
+  .workflow-actions { width: 100%; justify-content: flex-end; }
+  .settings-row { flex-direction: column; align-items: flex-start; }
+  .toast { min-width: auto; width: calc(100% - 48px); }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH PAGES -->
+<div id="authPage" class="auth-container">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">N</div>
+      <div class="auth-logo-text">Nexora</div>
+    </div>
+    
+    <div id="loginForm">
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-subtitle">Sign in to your Nexora account</p>
+      <div class="auth-error" id="loginError"><i class="fas fa-exclamation-circle"></i><span id="loginErrorText">Invalid credentials</span></div>
+      <form class="auth-form" onsubmit="handleLogin(event)">
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="loginEmail" placeholder="demo@nexora.ai" value="demo@nexora.ai" required></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="loginPassword" placeholder="demo123" value="demo123" required></div>
+        <button type="submit" class="auth-btn" id="loginBtn"><span>Sign In</span></button>
+      </form>
+      <div class="auth-divider">or continue with</div>
+      <div class="social-auth">
+        <button class="social-btn google" onclick="socialAuth('Google')"><i class="fab fa-google"></i> Continue with Google</button>
+        <button class="social-btn github" onclick="socialAuth('GitHub')"><i class="fab fa-github"></i> Continue with GitHub</button>
+      </div>
+      <div class="auth-footer">Don't have an account? <a onclick="showSignup()">Sign up</a></div>
+    </div>
+    
+    <div id="signupForm" style="display: none;">
+      <h2 class="auth-title">Create account</h2>
+      <p class="auth-subtitle">Start your 14-day free trial</p>
+      <div class="auth-error" id="signupError"><i class="fas fa-exclamation-circle"></i><span id="signupErrorText">Error</span></div>
+      <form class="auth-form" onsubmit="handleSignup(event)">
+        <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="signupName" placeholder="John Doe" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="signupEmail" placeholder="you@company.com" required></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="signupPassword" placeholder="Min 8 characters" required minlength="8"></div>
+        <button type="submit" class="auth-btn" id="signupBtn"><span>Create Account</span></button>
+      </form>
+      <div class="auth-footer">Already have an account? <a onclick="showLogin()">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="app">
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <button class="mobile-close-btn" onclick="closeMobileMenu()"><i class="fas fa-times"></i></button>
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">N</div>
+      <div class="sidebar-logo-text">Nexora</div>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">Main</div>
+      <ul class="nav-menu">
+        <li class="nav-item"><a class="nav-link active" onclick="navigateTo('dashboard', this)"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="navigateTo('workflows', this)"><i class="fas fa-bolt"></i> Workflows</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="navigateTo('integrations', this)"><i class="fas fa-plug"></i> Integrations</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="navigateTo('analytics', this)"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="navigateTo('ai-assistant', this)"><i class="fas fa-robot"></i> AI Assistant</a></li>
+      </ul>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">Account</div>
+      <ul class="nav-menu">
+        <li class="nav-item"><a class="nav-link" onclick="navigateTo('profile', this)"><i class="fas fa-user"></i> Profile</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="navigateTo('settings', this)"><i class="fas fa-cog"></i> Settings</a></li>
+      </ul>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile-card" onclick="navigateTo('profile', this)">
+        <div class="user-avatar" id="sidebarAvatar">JD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarName">Demo User</div>
+          <div class="user-email" id="sidebarEmail">demo@nexora.ai</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <!-- Mobile Top Bar -->
+    <div class="mobile-topbar">
+      <button class="hamburger-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+      <div class="sidebar-logo-text" style="font-size: 1.2rem;">Nexora</div>
+      <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;" id="mobileAvatar">JD</div>
+    </div>
+    <!-- Content injected by JavaScript -->
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ===== DATABASE (localStorage) =====
+const DB = {
+  getUsers: () => JSON.parse(localStorage.getItem('nexora_users') || '[]'),
+  saveUsers: (users) => localStorage.setItem('nexora_users', JSON.stringify(users)),
+  getCurrentUser: () => JSON.parse(localStorage.getItem('nexora_current_user') || 'null'),
+  setCurrentUser: (user) => localStorage.setItem('nexora_current_user', JSON.stringify(user)),
+  getWorkflows: () => JSON.parse(localStorage.getItem('nexora_workflows') || '[]'),
+  saveWorkflows: (workflows) => localStorage.setItem('nexora_workflows', JSON.stringify(workflows)),
+  getIntegrations: () => JSON.parse(localStorage.getItem('nexora_integrations') || '[]'),
+  saveIntegrations: (integrations) => localStorage.setItem('nexora_integrations', JSON.stringify(integrations))
+};
+
+function initializeData() {
+  if (DB.getUsers().length === 0) {
+    DB.saveUsers([{ id: 'demo', name: 'Demo User', email: 'demo@nexora.ai', password: 'demo123', createdAt: new Date().toISOString() }]);
+  }
+  if (DB.getWorkflows().length === 0) {
+    DB.saveWorkflows([
+      { id: 1, name: 'Lead Capture Automation', status: 'active', runs: 1247, lastRun: '2 min ago', icon: 'fa-envelope' },
+      { id: 2, name: 'Sales Notification', status: 'active', runs: 892, lastRun: '15 min ago', icon: 'fa-bell' },
+      { id: 3, name: 'Data Sync', status: 'active', runs: 2341, lastRun: '1 hour ago', icon: 'fa-sync' },
+      { id: 4, name: 'Report Generation', status: 'paused', runs: 156, lastRun: '2 days ago', icon: 'fa-file-alt' }
+    ]);
+  }
+  if (DB.getIntegrations().length === 0) {
+    DB.saveIntegrations([
+      { id: 'slack', name: 'Slack', icon: 'fab fa-slack', color: '#4A154B', connected: true },
+      { id: 'github', name: 'GitHub', icon: 'fab fa-github', color: '#333', connected: true },
+      { id: 'salesforce', name: 'Salesforce', icon: 'fas fa-cloud', color: '#00A1E0', connected: true },
+      { id: 'jira', name: 'Jira', icon: 'fab fa-jira', color: '#0052CC', connected: false },
+      { id: 'gmail', name: 'Gmail', icon: 'fas fa-envelope', color: '#EA4335', connected: true },
+      { id: 'notion', name: 'Notion', icon: 'fas fa-sticky-note', color: '#000', connected: false }
+    ]);
+  }
+}
+
+// ===== AUTH FUNCTIONS =====
+function showLogin() { document.getElementById('loginForm').style.display = 'block'; document.getElementById('signupForm').style.display = 'none'; }
+function showSignup() { document.getElementById('loginForm').style.display = 'none'; document.getElementById('signupForm').style.display = 'block'; }
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Signing in...';
+  setTimeout(() => {
+    const users = DB.getUsers();
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      DB.setCurrentUser(user); showToast('success', 'Welcome back, ' + user.name + '!'); showApp();
+    } else {
+      document.getElementById('loginErrorText').textContent = 'Invalid email or password';
+      document.getElementById('loginError').classList.add('show');
+      btn.disabled = false; btn.innerHTML = '<span>Sign In</span>';
+    }
+  }, 1000);
+}
+
+function handleSignup(e) {
+  e.preventDefault();
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Creating account...';
+  setTimeout(() => {
+    const users = DB.getUsers();
+    if (users.find(u => u.email === email)) {
+      document.getElementById('signupErrorText').textContent = 'Email already registered';
+      document.getElementById('signupError').classList.add('show');
+      btn.disabled = false; btn.innerHTML = '<span>Create Account</span>'; return;
+    }
+    const newUser = { id: Date.now().toString(), name, email, password, createdAt: new Date().toISOString() };
+    users.push(newUser); DB.saveUsers(users); DB.setCurrentUser(newUser);
+    showToast('success', 'Account created successfully!'); showApp();
+  }, 1000);
+}
+
+function socialAuth(provider) {
+  showToast('info', `Connecting to ${provider}...`);
+  setTimeout(() => {
+    const user = { id: Date.now().toString(), name: provider + ' User', email: 'user@' + provider.toLowerCase() + '.com', password: 'social', createdAt: new Date().toISOString() };
+    const users = DB.getUsers(); users.push(user); DB.saveUsers(users); DB.setCurrentUser(user);
+    showToast('success', 'Signed in with ' + provider + '!'); showApp();
+  }, 1500);
+}
+
+function handleLogout() {
+  if (confirm('Are you sure you want to logout?')) {
+    localStorage.removeItem('nexora_current_user');
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('authPage').style.display = 'flex';
+    showToast('info', 'Logged out successfully');
+  }
+}
+
+function showApp() {
+  document.getElementById('authPage').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  updateUserUI();
+  navigateTo('dashboard', document.querySelector('.nav-link')); // Default to dashboard
+}
+
+function updateUserUI() {
+  const user = DB.getCurrentUser();
+  if (user) {
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2);
+    document.getElementById('sidebarAvatar').textContent = initials;
+    document.getElementById('mobileAvatar').textContent = initials;
+    document.getElementById('sidebarName').textContent = user.name;
+    document.getElementById('sidebarEmail').textContent = user.email;
+  }
+}
+
+// ===== MOBILE MENU =====
+function toggleMobileMenu() {
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('mobileOverlay').classList.add('active');
+}
+function closeMobileMenu() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobileOverlay').classList.remove('active');
+}
+
+// ===== NAVIGATION =====
+function navigateTo(page, element) {
+  // Update active nav styling
+  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+  if(element && element.classList && element.classList.contains('nav-link')) {
+    element.classList.add('active');
+  } else {
+    // Fallback if clicked from profile card
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach(l => { if(l.textContent.trim().toLowerCase().includes(page.split('-')[0])) l.classList.add('active'); });
+  }
+  
+  closeMobileMenu(); // Close sidebar on mobile when navigating
+  const content = document.getElementById('mainContent');
+  // Keep the mobile topbar
+  const topbarHTML = `<div class="mobile-topbar">
+      <button class="hamburger-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+      <div class="sidebar-logo-text" style="font-size: 1.2rem;">Nexora</div>
+      <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;" id="mobileAvatar">${DB.getCurrentUser() ? DB.getCurrentUser().name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2) : 'JD'}</div>
+    </div>`;
+
+  let pageHTML = '';
+  switch(page) {
+    case 'dashboard': pageHTML = renderDashboard(); break;
+    case 'workflows': pageHTML = renderWorkflows(); break;
+    case 'integrations': pageHTML = renderIntegrations(); break;
+    case 'analytics': pageHTML = renderAnalytics(); break;
+    case 'ai-assistant': pageHTML = renderAIAssistant(); break;
+    case 'profile': pageHTML = renderProfile(); break;
+    case 'settings': pageHTML = renderSettings(); break;
+  }
+  content.innerHTML = topbarHTML + pageHTML;
+}
+
+// ===== PAGE RENDERERS =====
+function renderDashboard() {
+  const workflows = DB.getWorkflows();
+  const activeWorkflows = workflows.filter(w => w.status === 'active').length;
+  const totalRuns = workflows.reduce((sum, w) => sum + w.runs, 0);
+  return `
+    <div class="page-header">
+      <div><h1 class="page-title">Dashboard</h1><p class="page-subtitle">Welcome back! Here's your workflow overview.</p></div>
+      <div class="header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-download"></i> Export</button>
+        <button class="btn btn-primary" onclick="showCreateWorkflowModal()"><i class="fas fa-plus"></i> New Workflow</button>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon purple"><i class="fas fa-bolt"></i></div><div class="stat-change-badge positive"><i class="fas fa-arrow-up"></i> 12%</div></div><div class="stat-value">${activeWorkflows}</div><div class="stat-label">Active Workflows</div></div>
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-change-badge positive"><i class="fas fa-arrow-up"></i> 24%</div></div><div class="stat-value">${(totalRuns / 1000).toFixed(1)}K</div><div class="stat-label">Tasks Automated</div></div>
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon blue"><i class="fas fa-clock"></i></div><div class="stat-change-badge positive"><i class="fas fa-arrow-up"></i> 8%</div></div><div class="stat-value">1,240</div><div class="stat-label">Hours Saved</div></div>
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon orange"><i class="fas fa-users"></i></div><div class="stat-change-badge positive"><i class="fas fa-plus"></i> 3</div></div><div class="stat-value">89</div><div class="stat-label">Team Members</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Workflow Executions</h3><select class="form-input" style="width: auto; padding: 8px 12px;"><option>Last 7 days</option><option>Last 30 days</option></select></div>
+      <div class="chart-container">${[35, 50, 40, 65, 45, 75, 55, 80].map((h, i) => `<div class="chart-bar-wrapper"><div class="chart-bar" style="height: ${h}%;"></div><div class="chart-label">Day ${i + 1}</div></div>`).join('')}</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Recent Workflows</h3><button class="btn btn-secondary" onclick="navigateTo('workflows', document.querySelectorAll('.nav-link')[1])">View All</button></div>
+      <div class="workflow-list">${workflows.slice(0, 3).map(w => `<div class="workflow-item"><div class="workflow-icon"><i class="fas ${w.icon}"></i></div><div class="workflow-info"><div class="workflow-name">${w.name}</div><div class="workflow-meta">${w.runs} runs • Last run ${w.lastRun}</div></div><div class="workflow-status ${w.status}">${w.status}</div></div>`).join('')}</div>
+    </div>`;
+}
+
+function renderWorkflows() {
+  const workflows = DB.getWorkflows();
+  return `
+    <div class="page-header">
+      <div><h1 class="page-title">Workflows</h1><p class="page-subtitle">Manage and monitor your automation workflows.</p></div>
+      <div class="header-actions"><button class="btn btn-primary" onclick="showCreateWorkflowModal()"><i class="fas fa-plus"></i> New Workflow</button></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">All Workflows (${workflows.length})</h3><input type="text" class="form-input" placeholder="Search workflows..." style="width: 250px; padding: 8px 12px;"></div>
+      <div class="workflow-list">${workflows.map(w => `<div class="workflow-item"><div class="workflow-icon"><i class="fas ${w.icon}"></i></div><div class="workflow-info"><div class="workflow-name">${w.name}</div><div class="workflow-meta">${w.runs} runs • Last run ${w.lastRun}</div></div><div class="workflow-status ${w.status}">${w.status}</div><div class="workflow-actions"><button class="icon-btn" onclick="toggleWorkflow(${w.id})"><i class="fas fa-${w.status === 'active' ? 'pause' : 'play'}"></i></button><button class="icon-btn danger" onclick="deleteWorkflow(${w.id})"><i class="fas fa-trash"></i></button></div></div>`).join('')}</div>
+    </div>`;
+}
+
+function renderIntegrations() {
+  const integrations = DB.getIntegrations();
+  return `
+    <div class="page-header"><div><h1 class="page-title">Integrations</h1><p class="page-subtitle">Connect your favorite tools and services.</p></div></div>
+    <div class="integrations-grid">${integrations.map(i => `<div class="integration-card ${i.connected ? 'connected' : ''}" onclick="toggleIntegration('${i.id}')"><div class="integration-logo" style="color: ${i.color}"><i class="${i.icon}"></i></div><div class="integration-name">${i.name}</div><div class="integration-status">${i.connected ? '✓ Connected' : 'Click to connect'}</div></div>`).join('')}</div>`;
+}
+
+function renderAnalytics() {
+  return `
+    <div class="page-header"><div><h1 class="page-title">Analytics</h1><p class="page-subtitle">Deep insights into your workflow performance.</p></div></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon purple"><i class="fas fa-chart-line"></i></div></div><div class="stat-value">99.9%</div><div class="stat-label">Uptime</div></div>
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon green"><i class="fas fa-tachometer-alt"></i></div></div><div class="stat-value">1.2s</div><div class="stat-label">Avg Response Time</div></div>
+      <div class="stat-card"><div class="stat-header"><div class="stat-icon blue"><i class="fas fa-exclamation-triangle"></i></div></div><div class="stat-value">0.02%</div><div class="stat-label">Error Rate</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Performance Over Time</h3></div>
+      <div class="chart-container">${[60, 75, 65, 85, 70, 90, 80, 95, 85, 100].map((h, i) => `<div class="chart-bar-wrapper"><div class="chart-bar" style="height: ${h}%;"></div><div class="chart-label">Week ${i + 1}</div></div>`).join('')}</div>
+    </div>`;
+}
+
+function renderAIAssistant() {
+  return `
+    <div class="page-header"><div><h1 class="page-title">AI Assistant</h1><p class="page-subtitle">Get help optimizing your workflows with AI.</p></div></div>
+    <div class="ai-chat-container">
+      <div class="ai-chat-header"><div class="ai-avatar"><i class="fas fa-robot"></i></div><div><div style="font-weight: 600;">Nexora AI</div><div style="font-size: 0.8rem; color: var(--text-muted);">Always online</div></div></div>
+      <div class="ai-chat-messages" id="chatMessages"><div class="chat-message ai">Hi! I'm your AI assistant. I can help you optimize workflows, suggest automations, and answer questions about Nexora. What would you like to know?</div></div>
+      <div class="ai-chat-input"><input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="handleChatKey(event)"><button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button></div>
+    </div>`;
+}
+
+function renderProfile() {
+  const user = DB.getCurrentUser();
+  const workflows = DB.getWorkflows();
+  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2);
+  return `
+    <div class="page-header"><div><h1 class="page-title">Profile</h1><p class="page-subtitle">Manage your account information.</p></div></div>
+    <div class="profile-header">
+      <div class="profile-avatar-large">${initials}</div>
+      <div class="profile-name">${user.name}</div><div class="profile-email">${user.email}</div>
+      <div class="profile-stats">
+        <div><div class="profile-stat-value">${workflows.length}</div><div class="profile-stat-label">Workflows</div></div>
+        <div><div class="profile-stat-value">${workflows.reduce((sum, w) => sum + w.runs, 0)}</div><div class="profile-stat-label">Total Runs</div></div>
+        <div><div class="profile-stat-value">14</div><div class="profile-stat-label">Days Left</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Edit Profile</h3></div>
+      <form onsubmit="updateProfile(event)" style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="profileName" value="${user.name}" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="profileEmail" value="${user.email}" required></div>
+        <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Save Changes</button>
+      </form>
+    </div>`;
+}
+
+function renderSettings() {
+  return `
+    <div class="page-header"><div><h1 class="page-title">Settings</h1><p class="page-subtitle">Configure your Nexora experience.</p></div></div>
+    <div class="settings-section">
+      <h3 class="settings-title">Notifications</h3>
+      <div class="settings-row"><div><div class="settings-label">Email Notifications</div><div class="settings-desc">Receive email updates about your workflows</div></div><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+      <div class="settings-row"><div><div class="settings-label">Push Notifications</div><div class="settings-desc">Get push notifications for important events</div></div><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+    </div>
+    <div class="settings-section">
+      <h3 class="settings-title">Privacy</h3>
+      <div class="settings-row"><div><div class="settings-label">Two-Factor Authentication</div><div class="settings-desc">Add an extra layer of security to your account</div></div><button class="btn btn-secondary">Enable</button></div>
+      <div class="settings-row"><div><div class="settings-label">Data Sharing</div><div class="settings-desc">Allow anonymous usage data to improve Nexora</div></div><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div>
+    </div>
+    <div class="settings-section">
+      <h3 class="settings-title" style="color: var(--danger);">Danger Zone</h3>
+      <div class="settings-row"><div><div class="settings-label">Delete Account</div><div class="settings-desc">Permanently delete your account and all data</div></div><button class="btn btn-secondary" style="color: var(--danger); border-color: var(--danger);" onclick="deleteAccount()">Delete Account</button></div>
+    </div>`;
+}
+
+// ===== ACTION HANDLERS =====
+function showCreateWorkflowModal() {
+  const modal = document.getElementById('modalOverlay');
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="modal-header"><h3 class="modal-title">Create New Workflow</h3><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+    <form onsubmit="createWorkflow(event)">
+      <div class="form-group"><label class="form-label">Workflow Name</label><input type="text" class="form-input" id="workflowName" placeholder="e.g., Lead Capture Automation" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="workflowDesc" placeholder="Describe what this workflow does..." rows="3" style="resize: vertical;"></textarea></div>
+      <div style="display: flex; gap: 12px; margin-top: 24px;"><button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">Cancel</button><button type="submit" class="btn btn-primary" style="flex: 1;">Create Workflow</button></div>
+    </form>`;
+  modal.classList.add('active');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+
+function createWorkflow(e) {
+  e.preventDefault();
+  const name = document.getElementById('workflowName').value;
+  const workflows = DB.getWorkflows();
+  workflows.push({ id: Date.now(), name, status: 'active', runs: 0, lastRun: 'Just now', icon: 'fa-bolt' });
+  DB.saveWorkflows(workflows); closeModal(); showToast('success', 'Workflow created successfully!');
+  navigateTo('workflows', document.querySelectorAll('.nav-link')[1]);
+}
+
+function toggleWorkflow(id) {
+  const workflows = DB.getWorkflows();
+  const workflow = workflows.find(w => w.id === id);
+  if (workflow) { workflow.status = workflow.status === 'active' ? 'paused' : 'active'; DB.saveWorkflows(workflows); showToast('info', `Workflow ${workflow.status === 'active' ? 'activated' : 'paused'}`); navigateTo('workflows', document.querySelectorAll('.nav-link')[1]); }
+}
+
+function deleteWorkflow(id) {
+  if (confirm('Are you sure you want to delete this workflow?')) {
+    const workflows = DB.getWorkflows().filter(w => w.id !== id);
+    DB.saveWorkflows(workflows); showToast('success', 'Workflow deleted'); navigateTo('workflows', document.querySelectorAll('.nav-link')[1]);
+  }
+}
+
+function toggleIntegration(id) {
+  const integrations = DB.getIntegrations();
+  const integration = integrations.find(i => i.id === id);
+  if (integration) { integration.connected = !integration.connected; DB.saveIntegrations(integrations); showToast('success', `${integration.name} ${integration.connected ? 'connected' : 'disconnected'}`); navigateTo('integrations', document.querySelectorAll('.nav-link')[2]); }
+}
+
+function handleChatKey(e) { if (e.key === 'Enter') sendChatMessage(); }
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+  const messages = document.getElementById('chatMessages');
+  messages.innerHTML += `<div class="chat-message user">${message}</div>`;
+  input.value = ''; messages.scrollTop = messages.scrollHeight;
+  setTimeout(() => {
+    const responses = ["I can help you optimize that workflow! Would you like me to analyze its performance?", "Great question! Based on your usage patterns, I recommend enabling auto-scaling.", "I've analyzed your workflows and found 3 opportunities for optimization.", "That's a common use case! I can create a template workflow for you."];
+    messages.innerHTML += `<div class="chat-message ai">${responses[Math.floor(Math.random() * responses.length)]}</div>`;
+    messages.scrollTop = messages.scrollHeight;
+  }, 1000);
+}
+
+function updateProfile(e) {
+  e.preventDefault();
+  const name = document.getElementById('profileName').value;
+  const email = document.getElementById('profileEmail').value;
+  const user = DB.getCurrentUser(); user.name = name; user.email = email;
+  DB.setCurrentUser(user);
+  const users = DB.getUsers(); const idx = users.findIndex(u => u.id === user.id);
+  if (idx !== -1) { users[idx] = user; DB.saveUsers(users); }
+  updateUserUI(); showToast('success', 'Profile updated successfully!');
+}
+
+function deleteAccount() {
+  if (confirm('This action cannot be undone. Are you sure?')) {
+    localStorage.clear(); document.getElementById('app').classList.remove('active'); document.getElementById('authPage').style.display = 'flex'; showToast('info', 'Account deleted');
+  }
+}
+
+function showToast(type, message) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+  toast.innerHTML = `<i class="fas ${icons[type]}" style="color: var(--${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'accent'})"></i><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%)'; toast.style.transition = 'all 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ===== INITIALIZATION =====
+initializeData();
+const currentUser = DB.getCurrentUser();
+if (currentUser) { showApp(); }
+document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
+</script>
+</body>
+</html>
